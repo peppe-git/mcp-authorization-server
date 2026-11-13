@@ -1,0 +1,65 @@
+# SPDX-License-Identifier: Apache-2.0
+# Publishes a release to Maven Central. Never run yet: the repository has no remote.
+# The upload is only validated (autoPublish=false in the release profile): publication is confirmed by
+# hand on central.sonatype.com. See RELEASING.md.
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+          # settings.xml gets a <server id="central"> that reads these environment variables.
+          server-id: central
+          server-username: MAVEN_CENTRAL_USERNAME
+          server-password: MAVEN_CENTRAL_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+      - name: Check that the version is a release and matches the tag
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          REF_TYPE: ${{ github.ref_type }}
+        run: |
+          version="$(./mvnw -B -q help:evaluate -Dexpression=project.version -DforceStdout)"
+          if [[ "$REF_TYPE" != "tag" ]]; then
+            echo "::error::Run this workflow on a tag v<version>, not on a branch."
+            exit 1
+          fi
+          if [[ "$version" == *-SNAPSHOT ]]; then
+            echo "::error::The pom version $version is a snapshot."
+            exit 1
+          fi
+          if [[ "v$version" != "$REF_NAME" ]]; then
+            echo "::error::The pom version $version does not match the tag $REF_NAME."
+            exit 1
+          fi
+          echo "Releasing $version"
+      - name: Scrub check
+        run: ./scripts/scrub-check.sh
+      - name: Build, test, sign and upload to Maven Central
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: ./mvnw -B -Prelease deploy
