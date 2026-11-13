@@ -20,3 +20,5 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Optional RFC 7591 dynamic registration, off by default.
 - Service provider interfaces for the consent page, principal resolution, scope policy and storage.
   Audit events are published as Spring events.
+- Release profile (sources, javadoc, GPG signatures) and a release workflow that uploads to Maven Central
+  for manual confirmation. Dependabot keeps Maven dependencies and GitHub Actions up to date.

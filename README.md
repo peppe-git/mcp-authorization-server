@@ -153,6 +153,7 @@ down. Why the starter is not built on Spring Authorization Server: [ADR-0001](do
 
 - Report vulnerabilities privately: [SECURITY.md](SECURITY.md).
 - Contributions: [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+- Releases: [RELEASING.md](RELEASING.md).
 
 ## License
 
