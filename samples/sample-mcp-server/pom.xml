@@ -16,9 +16,12 @@
 	<description>A minimal application that puts the authorization server in front of an MCP endpoint.</description>
 
 	<properties>
-		<!-- A sample, never published. -->
+		<!-- A sample, never published: no install, deploy, sources, javadoc or signature. -->
 		<maven.deploy.skip>true</maven.deploy.skip>
 		<maven.install.skip>true</maven.install.skip>
+		<maven.source.skip>true</maven.source.skip>
+		<maven.javadoc.skip>true</maven.javadoc.skip>
+		<gpg.skip>true</gpg.skip>
 	</properties>
 
 	<dependencies>
@@ -61,4 +64,22 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<!-- Same id as the parent's profile: active with -Prelease, keeps this module out of the bundle. -->
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonatype.central</groupId>
+						<artifactId>central-publishing-maven-plugin</artifactId>
+						<configuration>
+							<skipPublishing>true</skipPublishing>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
