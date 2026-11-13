@@ -9,7 +9,7 @@ MCP or your own controller. At the end of this guide:
 
 ## 1. Add the starter (1 minute)
 
-The coordinates are provisional until the first release:
+Use the latest released version (until the first release, build it locally with `./mvnw install`):
 
 ```xml
 <dependency>

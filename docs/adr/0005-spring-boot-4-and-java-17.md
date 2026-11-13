@@ -1,6 +1,6 @@
 # ADR-0005: Spring Boot 4.1+ only, Java 17 baseline
 
-- Status: accepted (v0.1), to be confirmed by the maintainer
+- Status: accepted (v0.1)
 
 ## Context
 
