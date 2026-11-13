@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: Apache-2.0
+server:
+  port: 8080
+
+mcp:
+  authorization-server:
+    # The public origin of this server and the identifier of its MCP endpoint.
+    issuer: http://localhost:8080
+    resource: http://localhost:8080/mcp
+    resource-name: Sample MCP server
+    scopes:
+      - name: tools.read
+        description: See the tools and call the read-only ones
+        default-scope: true
+      - name: tools.write
+        description: Call tools that change your data
+    # A client you can drive by hand (see docs/guides/quickstart.md).
+    clients:
+      - client-id: sample-cli
+        client-name: Sample CLI
+        redirect-uris:
+          - http://127.0.0.1/callback

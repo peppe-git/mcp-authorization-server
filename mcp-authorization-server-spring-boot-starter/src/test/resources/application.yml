@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: Apache-2.0
+spring:
+  autoconfigure:
+    # The in-memory tests need no database; JdbcFlowTest turns this back on.
+    exclude: org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration
+mcp:
+  authorization-server:
+    issuer: http://localhost
+    resource: http://localhost/mcp
+    resource-name: Test MCP server
+    scopes:
+      - name: tools.read
+        description: Read your test data
+        default-scope: true
+      - name: tools.write
+        description: Change your test data
+    clients:
+      - client-id: test-cli
+        client-name: Test CLI
+        redirect-uris:
+          - http://127.0.0.1/callback
+          - https://client.example/callback
+      - client-id: hostile-name
+        client-name: "<img src=x onerror=alert(1)>‮evil"
+        redirect-uris:
+          - https://client.example/callback
+    maintenance:
+      enabled: false
+logging:
+  level:
+    root: WARN
